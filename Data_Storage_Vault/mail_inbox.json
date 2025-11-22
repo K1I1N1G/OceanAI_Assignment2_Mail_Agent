@@ -1,153 +1,203 @@
 {
-  "counter": 11,
+  "counter": 21,
   "emails": [
     {
       "id": 1,
-      "sender": "manager@company.com",
-      "subject": "Thank you for your great work this month",
-      "timestamp": "2025-11-25T10:00:00+05:30",
-      "body": "Hi,\n\nI just wanted to say how impressed I am with your work this month. Your attention to detail, timely delivery, and positive attitude have made a real difference to the team.\n\nKeep up the amazing work!\n\nBest,\nManager",
-      "category": "Positive",
-      "action_items": [],
-      "draftable": ""
+      "sender": "alice.joseph@company.com",
+      "subject": "Updated via tester.py",
+      "timestamp": "2025-11-24T10:00:00+05:30",
+      "body": "Hi Team, Can we schedule the project kickoff meeting on Monday at 10:00 AM in Conference Room A or on Zoom if remote? Please confirm your availability and share any agenda items. Thanks, Alice",
+      "category": "Meeting Scheduling",
+      "action_items": [
+        {
+          "task": "Confirm availability for the project kickoff meeting on Monday at 10:00 AM",
+          "deadline": "before Monday 10:00 AM"
+        },
+        {
+          "task": "Share any agenda items for the project kickoff meeting",
+          "deadline": "before Monday 10:00 AM"
+        }
+      ]
     },
     {
       "id": 2,
-      "sender": "customer@client.com",
-      "subject": "Frustration with recent support experience",
-      "timestamp": "2025-11-25T10:30:00+05:30",
-      "body": "Hello,\n\nI am very disappointed with the recent support experience. My issue was not properly addressed, the replies felt generic, and I had to follow up multiple times with no clear resolution.\n\nThis has been frustrating and I expect a proper response soon.\n\nRegards,\nUnhappy Customer",
-      "category": "Negative",
-      "action_items": [
-        {
-          "task": "Provide a proper response",
-          "deadline": "soon"
-        }
-      ],
-      "draftable": 0
+      "sender": "hr@company.com",
+      "subject": "Complete Your Timesheet by Friday",
+      "timestamp": "2025-11-21T17:45:00+05:30",
+      "body": "Dear Employee, Reminder: Please submit your timesheet for the current pay period by Friday EOD. Failure to submit may delay payroll processing. Best, HR Team",
+      "category": "",
+      "action_items": []
     },
     {
       "id": 3,
-      "sender": "wellness@company.com",
-      "subject": "Daily wellness checklist",
-      "timestamp": "2025-11-25T11:00:00+05:30",
-      "body": "Hi,\n\nHere is your simple wellness checklist for today:\n\n1. Eat something healthy for lunch (preferably before 1:00 PM).\n2. Drink at least 2 full bottles of water during the day.\n3. Take a 10-minute walk in the afternoon.\n4. Finish and send the pending status update to your lead before 6:00 PM.\n\nBest,\nWellness Team",
-      "category": "Positive",
-      "action_items": [
-        {
-          "task": "Eat something healthy for lunch",
-          "deadline": "before 1:00 PM"
-        },
-        {
-          "task": "Drink at least 2 full bottles of water",
-          "deadline": "during the day"
-        },
-        {
-          "task": "Take a 10-minute walk",
-          "deadline": "in the afternoon"
-        },
-        {
-          "task": "Finish and send the pending status update to your lead",
-          "deadline": "before 6:00 PM"
-        }
-      ],
-      "draftable": 0
+      "sender": "project.lead@startup.io",
+      "subject": "Sprint 5: Task Assignments and Deadlines",
+      "timestamp": "2025-11-19T09:15:00+05:30",
+      "body": "Hi everyone, Sprint 5 starts tomorrow. Assigned tasks and deadlines: Integrate auth module — due 2025-11-26; End-to-end tests — due 2025-11-28; UI polish — due 2025-11-27. If you have blockers, raise them in the standup. Regards, Lead",
+      "category": "",
+      "action_items": []
     },
     {
       "id": 4,
-      "sender": "alice.joseph@company.com",
-      "subject": "Project kickoff meeting – time confirmation",
-      "timestamp": "2025-11-25T11:30:00+05:30",
-      "body": "Hi Team,\n\nWe need to finalize the time for our project kickoff meeting. The proposed slot is Tuesday at 10:00 AM.\n\nPlease confirm your availability and let me know if you prefer a Zoom call or an in-person meeting in Conference Room A.\n\nThanks,\nAlice",
-      "category": "Positive",
-      "action_items": [
-        {
-          "task": "Confirm availability for the project kickoff meeting and state preference for Zoom or in-person",
-          "deadline": ""
-        }
-      ],
-      "draftable": ""
+      "sender": "events@community.org",
+      "subject": "Team Offsite — RSVP Needed",
+      "timestamp": "2025-11-25T09:00:00+05:30",
+      "body": "Hi team, we're planning a team offsite on December 5. Please RSVP by November 28 and indicate any dietary restrictions. Agenda will be shared soon. Thanks, Events Team",
+      "category": "",
+      "action_items": []
     },
     {
       "id": 5,
-      "sender": "ceo@company.com",
-      "subject": "Congratulations on your promotion!",
-      "timestamp": "2025-11-25T12:00:00+05:30",
-      "body": "Hi,\n\nCongratulations on your well-deserved promotion! Your hard work, ownership, and consistency have been noticed by everyone.\n\nWe’re excited to see you grow in this new role.\n\nWarm regards,\nCEO",
-      "category": "Positive",
-      "action_items": [],
-      "draftable": ""
+      "sender": "devdigest@devdigest.com",
+      "subject": "DevDigest: Weekly Roundup — Tools & Tips",
+      "timestamp": "2025-11-14T07:30:00+05:30",
+      "body": "Hello Developer, this week's DevDigest covers CI/CD improvements, a new testing library, and a short tutorial on observability. Read on for code samples and configuration tips. Happy building!",
+      "category": "",
+      "action_items": []
     },
     {
-      "sender": "ai.drafter@oceanai.local",
-      "subject": "Draft reply: Project kickoff meeting – time confirmation",
-      "timestamp": "2025-11-22T15:55:32+0530",
-      "body": "Hi Alice,\n\nThanks for the update regarding the project kickoff meeting.\n\nBefore confirming my availability and preferred meeting format, would you be able to share a brief agenda or a list of topics we'll be covering? This would help me prepare and ensure I can contribute effectively.\n\nThanks,\n[Your Name]",
-      "category": "draft",
-      "action_items": [
-        {
-          "task": "share a brief agenda or a list of topics",
-          "deadline": ""
-        }
-      ],
-      "draft_for": 4,
       "id": 6,
-      "draftable": ""
+      "sender": "lottery@winbig.example",
+      "subject": "You are the lucky winner of $10,000!",
+      "timestamp": "2025-11-20T12:05:00+05:30",
+      "body": "CONGRATULATIONS! You have been selected as a winner. Click the link to claim your prize and provide personal details. This is a limited time offer, act now!",
+      "category": "",
+      "action_items": []
     },
     {
-      "sender": "ai.drafter@oceanai.local",
-      "subject": "Draft reply: Thank you for your great work this month",
-      "timestamp": "2025-11-22T16:30:37+0530",
-      "body": "Thank you for your kind words, Manager. I truly appreciate the recognition and will continue to do my best.",
-      "category": "draft",
-      "action_items": [],
-      "draft_for": 1,
       "id": 7,
-      "draftable": ""
+      "sender": "manager@company.com",
+      "subject": "Action Required: Client Presentation Slides by Thursday",
+      "timestamp": "2025-11-22T10:15:00+05:30",
+      "body": "Hi, please prepare the client presentation slides covering milestones and next steps and share them by Thursday morning. Include metrics and a 5-minute demo. Reach out if you need content or data.",
+      "category": "",
+      "action_items": []
     },
     {
-      "sender": "ai.drafter@oceanai.local",
-      "subject": "Draft reply: Thank you for your great work this month",
-      "timestamp": "2025-11-22T16:30:37+0530",
-      "body": "Thank you so much for your kind words, Manager! I really appreciate your feedback and I'm glad my contributions have been helpful. I'll continue to do my best.",
-      "category": "draft",
-      "action_items": [],
-      "draft_for": 1,
       "id": 8,
-      "draftable": ""
+      "sender": "ops@product.com",
+      "subject": "Release 2.1 Deployment Report",
+      "timestamp": "2025-11-16T18:40:00+05:30",
+      "body": "Release 2.1 was deployed successfully last night. Key changes include performance fixes, security patches, and updated documentation. No major incidents reported. See attached release notes for details.",
+      "category": "",
+      "action_items": []
     },
     {
-      "sender": "ai.drafter@oceanai.local",
-      "subject": "Draft reply: Congratulations on your promotion!",
-      "timestamp": "2025-11-22T16:30:52+0530",
-      "body": "Thank you very much for your kind words and this incredible opportunity. I'm excited to contribute further in my new role.",
-      "category": "draft",
-      "action_items": [],
-      "draft_for": 5,
       "id": 9,
-      "draftable": ""
+      "sender": "teamlead@devhub.com",
+      "subject": "Meeting Request: Architecture Review Tomorrow",
+      "timestamp": "2025-11-23T11:30:00+05:30",
+      "body": "Hi, we need to conduct an architecture review meeting tomorrow at 4 PM to finalize the backend flow and integration plan. Please confirm your availability and bring any pending concerns for discussion.",
+      "category": "",
+      "action_items": []
     },
     {
-      "sender": "ai.drafter@oceanai.local",
-      "subject": "Draft reply: Congratulations on your promotion!",
-      "timestamp": "2025-11-22T16:30:54+0530",
-      "body": "Thank you for your warm congratulations and kind words. I truly appreciate your support and am excited to contribute in this new role.",
-      "category": "draft",
-      "action_items": [],
-      "draft_for": 5,
       "id": 10,
-      "draftable": ""
+      "sender": "newsletter@financeworld.org",
+      "subject": "FinanceWorld Monthly — Market Insights & Reports",
+      "timestamp": "2025-11-10T07:00:00+05:30",
+      "body": "Hello Reader, here is your monthly edition of FinanceWorld covering market trends, inflation reports, and investment insights. This issue includes expert predictions, sector comparisons, and risk analysis for Q4.",
+      "category": "",
+      "action_items": []
     },
     {
-      "sender": "ai.drafter@oceanai.local",
-      "subject": "Draft reply: Frustration with recent support experience",
-      "timestamp": "2025-11-22T17:09:32+0530",
-      "body": "Dear Unhappy Customer,\n\nI'm truly sorry to hear about your frustrating experience with our recent support and that your issue was not properly addressed. I understand how disappointing it is when you don't receive the clear resolution and personalized assistance you expect, especially after multiple follow-ups.\n\nPlease accept my sincere apologies for the generic replies and the lack of a satisfactory outcome. That is certainly not the standard of service we aim to provide.\n\nI would like to personally look into this for you and ensure your concerns are properly addressed. Could you please provide me with your case number or any relevant details so I can investigate what went wrong and work towards an effective resolution?",
-      "category": "draft",
-      "action_items": [],
-      "draft_for": 2,
       "id": 11,
-      "draftable": ""
+      "sender": "spam-alert@fakepromo.example",
+      "subject": "Exclusive Offer! Get a Free iPhone Right Now!",
+      "timestamp": "2025-11-19T16:25:00+05:30",
+      "body": "You have been chosen for an exclusive giveaway. Claim your free iPhone by clicking the link and entering your personal details. Hurry before the offer expires!",
+      "category": "",
+      "action_items": []
+    },
+    {
+      "id": 12,
+      "sender": "operations@company.com",
+      "subject": "Task Update: Server Maintenance Checklist",
+      "timestamp": "2025-11-21T09:20:00+05:30",
+      "body": "Hello, please review the server maintenance checklist and complete your assigned tasks by Monday morning. Ensure logs are backed up and all security patches are installed. Inform the ops team once done.",
+      "category": "",
+      "action_items": []
+    },
+    {
+      "id": 13,
+      "sender": "updates@productlaunch.io",
+      "subject": "Project Update: Beta Version Rolling Out Next Week",
+      "timestamp": "2025-11-18T13:45:00+05:30",
+      "body": "Hi Team, the beta version of the product is scheduled for rollout next week. Features include UI revisions, new analytics dashboards, and improved sync performance. Further instructions will be shared during tomorrow’s sync call.",
+      "category": "",
+      "action_items": []
+    },
+    {
+      "id": 14,
+      "sender": "ceo@company.com",
+      "subject": "Meeting Request: Quarterly Strategy Discussion",
+      "timestamp": "2025-11-23T18:00:00+05:30",
+      "body": "Hi Team, we will be having our quarterly strategy discussion on Friday at 3 PM. Please prepare updates on departmental progress and upcoming goals. Let me know if you need additional time to compile the reports.",
+      "category": "",
+      "action_items": []
+    },
+    {
+      "id": 15,
+      "sender": "news@healthbulletin.org",
+      "subject": "HealthBulletin — Weekly Wellness Tips",
+      "timestamp": "2025-11-12T06:45:00+05:30",
+      "body": "Hello Reader, in this week's HealthBulletin we cover stress management techniques, nutrition tips for winter, and expert recommendations for healthy routines. Stay active and follow our wellness guide for a balanced lifestyle.",
+      "category": "",
+      "action_items": []
+    },
+    {
+      "id": 16,
+      "sender": "promo@cheapflights.example",
+      "subject": "Unbelievable Flight Deals — Book Now!",
+      "timestamp": "2025-11-19T20:10:00+05:30",
+      "body": "Grab the best flight offers of the year! Book now and get up to 85% off on international travel. Limited seats available. Click the link to reserve your ticket before prices go up.",
+      "category": "",
+      "action_items": []
+    },
+    {
+      "id": 17,
+      "sender": "supervisor@manufacturing.io",
+      "subject": "Task Assignment: Quality Check Reports for Batch 502",
+      "timestamp": "2025-11-22T08:40:00+05:30",
+      "body": "Hello, please generate and submit the quality check reports for Batch 502 by tomorrow evening. Ensure all metrics are included and highlight any defects. Reach out to the QA team if you require additional data.",
+      "category": "",
+      "action_items": []
+    },
+    {
+      "id": 18,
+      "sender": "updates@researchlab.ai",
+      "subject": "Project Update: Model Training Progress and Next Steps",
+      "timestamp": "2025-11-17T14:55:00+05:30",
+      "body": "Hi Team, model training for the current experiment is 80 percent complete. We will begin hyperparameter tuning this weekend. Please prepare evaluation scripts and update the documentation before Monday’s meeting.",
+      "category": "",
+      "action_items": []
+    },
+    {
+      "id": 19,
+      "sender": "tester@example.com",
+      "subject": "Test Add Mail",
+      "timestamp": "2025-11-20T12:00:00+05:30",
+      "body": "This is a test email body.",
+      "category": "",
+      "action_items": []
+    },
+    {
+      "id": 20,
+      "sender": "tester@example.com",
+      "subject": "Test Add Mail",
+      "timestamp": "2025-11-20T12:00:00+05:30",
+      "body": "This is a test email body.",
+      "category": "",
+      "action_items": []
+    },
+    {
+      "id": 21,
+      "sender": "ai.drafter@oceanai.local",
+      "subject": "Draft reply: Updated via tester.py",
+      "timestamp": "2025-11-20T23:04:22+0530",
+      "body": "(Concise and Direct):\n\nHi Alice,\n\nThanks for the invitation to the project kickoff meeting.\n\nTo help me prepare and ensure I can contribute effectively, could you please share the proposed agenda? Once I've had a chance to review it, I'll be happy to confirm my availability for Monday at 10:00 AM and suggest any relevant discussion points.\n\nBest regards,\n\n[Your Name]",
+      "category": "draft",
+      "action_items": []
     }
   ]
 }
