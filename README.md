@@ -6,7 +6,7 @@ Kumar Abhishek (22BCE1907) Final Year CSC Core student at VIT Chennai
 Repository: OceanAI_Assignment2_Mail_Agent
 URL: https://github.com/K1I1N1G/OceanAI_Assignment2_Mail_Agent
 ________________________________________
-🔹 Project Description
+🔹 Project Description:
 OceanAI Mail Agent is an AI-powered email assistant that uses Google Gemini to:
 •	Categorize emails
 •	Extract action items
@@ -48,7 +48,7 @@ ________________________________________
 Open the file:
 Agent_Brain/connection_gateway.py
 Find the line:
-API_KEY = "YOUR_KEY_HERE"
+API_KEY = ""
 Replace it with your actual API key, like:
 API_KEY = "YOUR_REAL_GEMINI_API_KEY"
 ________________________________________
