@@ -2,15 +2,15 @@
   "prompts": [
     {
       "type": "categorization",
-      "prompt": "Please Categorize the email sentiment as Positive or Negative."
+      "prompt": "Read the entire email and categorize it into one of the following strictly defined types only: [\"spam\", \"meeting\", \"newsletter\", \"task\", \"update\", \"other\"]. Respond ONLY with the category string and nothing else. Rules: If the email contains suspicious links, lottery, offers → spam. If it requests scheduling, availability, RSVP, meeting details → meeting. If it's periodic like promotions or magazines → newsletter. If it asks the user to complete a task or submit something → task. If it informs progress or deployment → update. Anything else → other."
     },
     {
       "type": "action_extraction",
-      "prompt": "Extract any tasks mentioned in the email. Respond in valid JSON:\\n[\\n  { \\\"task\\\": \\\"...\\\", \\\"deadline\\\": \\\"...\\\" }\\n]\\nIf no tasks exist, return an empty array: []"
+      "prompt": "Extract actionable tasks from the email body. Return ONLY a JSON array of objects, each with 'task' and 'deadline' keys. If there are no tasks, return an empty array []. Example response: [{\"task\":\"Prepare slides for the presentation\",\"deadline\":\"Before Thursday 10 AM\"}]. Be concise and do not include sender greetings or irrelevant lines."
     },
     {
       "type": "auto_reply",
-      "prompt": "If the email is negative in tone, such as a complaint, frustration, or dissatisfaction, write a short, calm, and empathetic reply. Acknowledge the person's concerns, apologize if appropriate, and offer to help or outline next steps. Avoid any hateful, aggressive, or blaming language. Respond only with the reply message text."
+      "prompt": "Draft a polite and concise auto-reply for meeting-related emails only. Response structure:\nSubject: Re: <original subject>\nBody:\nHi <Sender Name>,\nThanks for reaching out. Could you please share the meeting agenda so I can prepare accordingly? I will confirm availability after reviewing the agenda.\nRegards,\n[Your Name]\n\nIf the email is NOT a meeting request, respond with an empty string ''."
     }
   ]
 }
