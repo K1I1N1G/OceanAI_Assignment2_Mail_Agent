@@ -1,0 +1,214 @@
+UI Layer — Developer Manual
+=================================================================================
+Purpose:
+--------
+This layer provides the complete user-facing interface using Streamlit.  
+It controls:
+
+- Inbox viewing and mail browsing
+- Editing and management of draft messages
+- Interactive chat with the AI about a specific email
+- Prompt editing tools
+- Auto-refresh and UI state persistence
+
+Unlike the backend, **the UI does not write or process mails directly** — it
+delegates those operations to Data_Storage_Vault and Backend modules.
+
+=================================================================================
+FILES INCLUDED:
+- home.py
+- chat.py
+- homecss.py
+- homefunc.py
+
+Each section below describes the file's purpose, how it works, and how to extend it.
+
+=================================================================================
+1) home.py  (Inbox Screen)
+───────────────────────────────────────────────────────────────────────────────
+Source Reference: :contentReference[oaicite:0]{index=0}
+
+Role:
+-----
+Render the main inbox dashboard where users can:
+- View all emails sorted visually in card format
+- Expand preview text inside a card
+- Navigate to the Chat page for a specific mail
+- Edit or delete draft mails
+- Modify system prompts (via sidebar editor)
+- Trigger mail reprocessing when prompts change
+
+Key Features:
+-------------
+✔ Uses `fast_return_mails()` from Backend.load_mail to load inbox quickly  
+✔ Automatically triggers AI background processing  
+✔ Detects failures in Agent_Brain and shows a modal  
+✔ Sidebar includes editable prompt areas (categorizer, extractor, drafters)
+
+Inputs:
+-------
+- `mail_inbox.json` (loaded indirectly through backend)
+- `query params` for actions like:
+  - `?edit_mail=<id>`
+  - `?delete_mail=<id>`
+  - `?page=chat&mail_id=<id>`
+
+UI Pipeline:
+------------
+1. Show header and load styling → from `homecss.py`.  
+2. Parse query actions (edit, delete, expand).  
+3. Load inbox via `load_and_process()`.  
+4. Render each mail as a card, including:
+   - sender
+   - subject
+   - snippet
+   - metadata (timestamp, category tag, action item indicator)
+5. If card expanded → show:
+   - Full preview
+   - Action item list
+6. If category == draft → enable editing tools (inline and full-page)
+7. Watch prompt changes → reset derived fields and re-run AI processors.
+
+Extending home.py:
+------------------
+- To add new metadata (urgency, sentiment rating), update:
+  - card rendering block
+  - right_side_html builder calls
+- To change card visual layout, modify:
+  - `homecss.py`
+  - or `build_right_side_html()` in Backend.helper
+
+
+=================================================================================
+2) chat.py  (Mail Conversation & Draft Editor)
+───────────────────────────────────────────────────────────────────────────────
+Source Reference: :contentReference[oaicite:1]{index=1}
+
+Role:
+-----
+Provides a conversational interface for a selected mail, where the user can:
+- Ask questions about the email
+- Request AI clarifications (tone analysis, summarization)
+- Generate or refine a reply
+- Edit and save AI-generated draft responses
+
+Key Features:
+-------------
+✔ Uses same prompt builder as automation (`prompter.make_prompt()`)  
+✔ Maintains per-mail chat history via Streamlit session state  
+✔ Stores user ↔ AI messages visually (left/right bubble layout)  
+✔ Allows saving AI responses directly into the draft mail body  
+✔ Automatic throttling when backend rate limits apply  
+
+Inputs:
+-------
+- Query parameter `mail_id`  
+- Session state keys:
+  - `chat_history_<mail_id>`
+  - `user_input_<mail_id>`
+
+Core Pipeline:
+--------------
+1. Extract the mail using `fast_return_mails()` or fallback file load.
+2. Generate the base system message using:
+     `prompter.make_prompt(mail)`  
+3. Render mail summary panel (sender, subject, timestamp + preview).
+4. If mail is a draft → show editable textarea and “Save Draft”.
+5. Render message history (user right bubble, AI left bubble).
+6. Handle Send button:
+   - append user message to history
+   - call LLM via `connection_gateway.call(...)`
+   - append AI reply to history
+7. Optional actions:
+   - "Save Chat As Draft Body"
+   - "Clear Chat"
+   - Auto-rerun to refresh UI
+
+Extending chat.py:
+------------------
+- To add AI presets (“Summarize”, “Rewrite politely”, etc.), add buttons creating
+  predefined messages to `combined_prompt`.
+- To support uploaded files → attach them to base prompt or call agent with context.
+
+
+=================================================================================
+3) homecss.py  (Styling / UX Theme)
+───────────────────────────────────────────────────────────────────────────────
+Source Reference: :contentReference[oaicite:2]{index=2}
+
+Role:
+-----
+Defines all CSS styling for the inbox UI, including:
+
+- Font theme
+- Card layout & animation
+- Expandable preview animation
+- Right-side metadata positioning
+- Draft editor panel theme
+
+Outputs:
+--------
+- Three main reusable CSS strings injected by `st.markdown()`:
+  - `font_css`
+  - `card_css`
+  - `bottom_editor_css(mail_id)`
+
+Extension Notes:
+----------------
+- The UI is intentionally modular — modify only CSS to restyle the entire app.
+- Avoid inline styling in templates unless dynamic layout requires it.
+- To add themes (light/dark toggle), turn these into dynamic style sets.
+
+
+=================================================================================
+4) homefunc.py  (UI Helper Logic)
+───────────────────────────────────────────────────────────────────────────────
+Source Reference: :contentReference[oaicite:3]{index=3}
+
+Role:
+-----
+Provides helper logic used by home.py when backend functionality is missing,
+unavailable, or temporarily failing.
+
+What It Provides:
+-----------------
+✔ Local fallback implementations of:
+- `local_delete_mail()`
+- `local_update_mail()`
+
+✔ Resilient I/O logic:
+- Locates inbox JSON dynamically across multiple folder layouts
+- Normalizes inbox structure if corrupted
+
+✔ Metadata helpers:
+- `fmt_ts()` for timestamps
+- `default_build_right_side_html()` if Backend.helper is unavailable
+
+✔ Error handling UI:
+- Detects Agent_Brain processing failures
+- Shows dismissible warning modal in UI
+
+✔ Reset utilities responding to prompt changes:
+- Clear categories
+- Reset action items
+- Reset draft flags
+
+Extension Notes:
+----------------
+- Use this file to add future UI-side safe fallbacks
+- Avoid adding business logic — keep UI helpers strictly UI-centric
+
+
+=================================================================================
+How To Extend the UI Layer Safely
+---------------------------------------------------------------------------------
+When adding new UI features (example: priority tagging, sentiment display):
+
+1. Extend backend first to store new field.
+2. Modify `home.py` card renderer to display the field.
+3. Update `homecss.py` if new formatting is needed.
+4. If field requires user interaction (toggle/edit), modify:
+   - chat.py or inbox interaction handlers.
+5. Keep state stored in Streamlit session keys so navigation remains consistent.
+
+=================================================================================

@@ -1,0 +1,238 @@
+OceanAI Mail Agent — Complete Project Manual
+Overview:
+
+OceanAI Mail Agent is an AI-assisted mailbox system. It reads emails, categorizes them, extracts action items, drafts polite replies, and presents an interactive chat UI for refining drafts or querying the email context.
+
+The architecture is modular and each part can be improved or replaced without affecting the rest of the system. Prompts are editable, AI logic is centralized, and email data is stored locally in JSON for transparency, testability, and control.
+
+app.py — Application Entry Point
+
+Role: This file is the launcher. When the project runs, app.py decides which UI page (Inbox or Chat) to show based on the URL query parameter ("page"). It sets global Streamlit configuration, ensures session data exists, and initializes the system.
+
+Responsibilities:
+
+Route navigation between screens (Inbox → Chat → Prompt Editing)
+
+Initialize Streamlit settings and UI defaults
+
+Detect missing dependencies and continue in safe fallback mode
+
+Trigger backend background mail processing indirectly (via UI trigger)
+
+Keep the application stable even if the AI or backend fails
+
+app.py does NOT:
+
+Modify emails
+
+Run AI logic
+
+Save files
+
+It simply delegates those responsibilities.
+
+This separation makes the system easy to enhance because new views or features only require adding one routing entry instead of altering multiple modules.
+
+UI Layer
+
+home.py (Inbox Screen)
+Source: 
+
+home
+
+Purpose: Displays the mailbox visually using cards. The user can click a mail to open a detailed chat page. It also provides prompt editing tools from the sidebar and interacts with backend helpers for deleting or updating drafts.
+
+Main functions:
+
+Load mailbox quickly from backend
+
+Show visual card layout for each mail
+
+Allow editing and deleting ONLY drafts
+
+Auto-refresh when new AI processing updates mail content
+
+Reset mail content when prompts are changed
+
+Extensible areas:
+
+Add badges (e.g., sentiment, urgency, stars)
+
+Add filtering and sorting options
+
+chat.py (Mail Chat Interface)
+Source: 
+
+chat
+
+Purpose: Allows the user to chat with the AI about a specific mail, ask questions, request rewrites, or refine suggested drafts. If the selected mail is a draft, the edited AI content can be saved back to the inbox.
+
+Key capabilities:
+
+Session-based conversation memory
+
+LLM query handling using connection_gateway
+
+Editable draft body
+
+Save latest AI reply as draft content
+
+homecss.py (Styling)
+Source: 
+
+homecss
+
+Holds all visual CSS for the UI:
+
+Fonts
+
+Card styling
+
+Expand animation
+
+Dark theme layout
+
+Inline editor styling for drafts
+
+Changing this file modifies appearance without affecting logic.
+
+homefunc.py (Fallback & Extra UI Logic)
+Source: 
+
+homefunc
+
+Purpose:
+
+Provide safe fallback behavior if backend functions are missing
+
+Detect LLM errors and show UI warnings
+
+Manage reset behavior when prompts change
+
+Functions include:
+
+Timestamp formatting
+
+Local delete/update when backend unavailable
+
+Error modal behavior for failed AI processing
+
+Backend Layer
+
+load_mail.py:
+
+Quickly loads inbox for UI
+
+Runs AI processing in background threads
+
+Handles prompt-change resets
+
+mail_func.py:
+
+Oversees the full processing pipeline
+
+Ensures each mail goes through:
+
+Categorization
+
+Action extraction
+
+Draft generation (if eligible)
+
+Prevents duplicate processing and ensures retry behavior
+
+helper.py + ui_helper.py:
+
+Format right-side UI metadata (category, timestamp, tasks)
+
+Backend is where mailbox becomes "AI processed."
+
+Agent_Brain Layer
+
+connection_gateway:
+
+The single function that sends text to the LLM and returns output
+
+Handles communication failures, retries, and parsing
+
+smart_categorizer:
+
+Builds category prompt → runs LLM → validates result → saves category
+
+action_item_extractor:
+
+Asks LLM for structured JSON → extracts tasks → saves them
+
+AI_mail_drafter:
+
+Generates polite reply drafts
+
+Responds with INVALID when no draft should exist
+
+Saves drafts in the inbox
+
+This layer ensures consistent behavior and makes LLM upgrade or provider switching easy.
+
+Data_Storage_Vault Layer
+
+mail_inbox.json (Storage File)
+All emails are stored here.
+Includes counter used to assign new IDs.
+
+Functions:
+
+add_mail() → Create new mail and increment ID counter
+
+delete_mail() → Remove a mail by its ID
+
+update_mail() → Modify only changed fields
+
+Prompt Storage:
+
+prompt_library.json stores all editable AI prompts
+
+update_prompt() modifies stored prompts so the AI behavior can be changed without rewriting code
+
+Why This System Is Extensible
+
+The architecture separates concerns intentionally:
+
+UI does not run AI logic
+
+Backend does not define prompts
+
+Prompts influence AI behavior without code changes
+
+Storage is fully JSON-based and inspectable
+
+Agent_Brain is centralized and reusable
+
+Adding a new AI feature (like sentiment detection or tagging) only requires:
+
+New Agent_Brain function
+
+One additional backend processing step
+
+Optional UI display addition
+
+No breaking changes.
+
+Summary
+
+This system is:
+
+Modular
+
+Fully prompt-driven
+
+Easy to test
+
+Easy to enhance
+
+Robust against provider failures
+
+User-controlled (AI never sends emails automatically)
+
+OceanAI Mail Agent is designed to grow — this architecture ensures future functionality such as Gmail integration, mobile view, tagging, or calendar sync can be added cleanly.
+
+End of Manual

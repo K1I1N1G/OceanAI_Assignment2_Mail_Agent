@@ -1,0 +1,19 @@
+Schemas for storage:                                    |
+________________________________________________________|
+Mail Schema:                                            |
+1)id (unique)                                           |
+2)sender                                                |
+3)subject                                               |
+4)timestamp (ISO8601)                                   |
+5)body                                                  |
+6)category (from categorization prompt)                 |
+7)action_items (array of structured objects — see below)|
+optional variables                                      |
+8) draftable                                            |
+9) draft_for                                            |
+________________________________________________________|
+Prompt Schema:                                          |
+1)type                                                  |
+2)prompt                                                |
+________________________________________________________|
+ 

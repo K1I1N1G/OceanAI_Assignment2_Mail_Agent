@@ -1,0 +1,16 @@
+{
+  "prompts": [
+    {
+      "type": "categorization",
+      "prompt": "Please Categorize the email sentiment as Positive or Negative."
+    },
+    {
+      "type": "action_extraction",
+      "prompt": "Extract any tasks mentioned in the email. Respond in valid JSON:\\n[\\n  { \\\"task\\\": \\\"...\\\", \\\"deadline\\\": \\\"...\\\" }\\n]\\nIf no tasks exist, return an empty array: []"
+    },
+    {
+      "type": "auto_reply",
+      "prompt": "If the email is negative in tone, such as a complaint, frustration, or dissatisfaction, write a short, calm, and empathetic reply. Acknowledge the person's concerns, apologize if appropriate, and offer to help or outline next steps. Avoid any hateful, aggressive, or blaming language. Respond only with the reply message text."
+    }
+  ]
+}

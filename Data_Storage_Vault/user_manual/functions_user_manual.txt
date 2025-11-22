@@ -1,0 +1,210 @@
+Data_Storage_Vault Module — Developer Manual
+=================================================================================
+Purpose:
+--------
+This module is responsible for **persistent storage**:
+- It stores all mails (inbox, drafts, etc.) in a JSON file.
+- It stores all AI prompts in a prompt library JSON file.
+- It exposes small helper functions so other modules don’t touch the files directly.
+
+Keeping all reads/writes here makes the system safer and easier to extend.
+
+=================================================================================
+Mail Storage Concepts:
+----------------------
+- mail_inbox.json:
+  - Contains:
+    - "counter": the next available mail id (integer).
+    - "emails" : list of mail objects (each one is a dict with id, subject, body, etc.).
+- Mail IDs:
+  - Every mail has a unique integer `id`.
+  - `counter` is used to assign new IDs when adding mails.
+- Atomic writes:
+  - File updates are done in a "write to temp + rename" style so that
+    partial writes don’t corrupt the inbox.
+
+=================================================================================
+Mail Functions:
+---------------------------------------------------------------------------------
+1) add_mail(new_mail)
+   --------------------------------------------------------------------------------
+   Role:
+   -----
+   Add a **new mail object** into the inbox and update the global `counter`.
+
+   Inputs:
+   -------
+   - new_mail (dict) – a mail object without a final id.
+     - Should include fields like: sender, subject, body, category, etc.
+
+   What it does (pipeline):
+   ------------------------
+   1) Load mailbox:
+      - Open `mail_inbox.json`.
+      - Read:
+        - `counter` (next free id).
+        - `emails` (current list of mails).
+   2) Assign ID:
+      - Set `new_mail["id"] = counter`.
+   3) Append mail:
+      - Add this `new_mail` to the `emails` list.
+   4) Update counter:
+      - Increment `counter` by 1 for the next mail.
+   5) Save back safely:
+      - Write updated `{ "counter": ..., "emails": [...] }` back to `mail_inbox.json`
+        using an atomic write (temp file + rename).
+   6) Return or log:
+      - Optionally return the new mail with its id or log what was added.
+
+   Why this is useful:
+   -------------------
+   - Central place for generating IDs and appending mails.
+   - Other modules never need to manually handle the counter or write the file.
+
+---------------------------------------------------------------------------------
+2) delete_mail(mail_id)
+   --------------------------------------------------------------------------------
+   Role:
+   -----
+   Remove a mail with a given `id` from the inbox.
+
+   Inputs:
+   -------
+   - mail_id (int) – the id of the mail to remove.
+
+   What it does (pipeline):
+   ------------------------
+   1) Load mailbox:
+      - Read `mail_inbox.json` to get the current `emails` list and `counter`.
+   2) Filter mails:
+      - Create a new `emails` list that **excludes** the mail whose `id`
+        matches `mail_id`.
+   3) Save back safely:
+      - Write the updated structure back to `mail_inbox.json`
+        using atomic write logic.
+   4) Optional behavior:
+      - If no mail with that id exists, it can:
+        - Either leave the file unchanged and log a warning, or
+        - Raise an error (depending on how it’s implemented).
+
+   Why this is useful:
+   -------------------
+   - Gives a consistent way to delete mails (UI / Agent_Brain just passes `id`).
+   - Guarantees that the inbox stays valid JSON and keeps its structure.
+
+---------------------------------------------------------------------------------
+3) update_mail(mail_id, updated_fields)
+   --------------------------------------------------------------------------------
+   Role:
+   -----
+   Find a mail by `id` and **update only specific fields** (e.g. category,
+   action_items, draftable).
+
+   Inputs:
+   -------
+   - mail_id (int)           – id of the mail to update.
+   - updated_fields (dict)   – key-value pairs to merge into that mail, e.g.:
+       { "category": "work" }
+       { "action_items": [...] }
+       { "draftable": 0 }
+
+   What it does (pipeline):
+   ------------------------
+   1) Load mailbox:
+      - Open `mail_inbox.json`.
+      - Read `counter` and `emails`.
+   2) Find target mail:
+      - Iterate through `emails` to find the mail with `mail["id"] == mail_id`.
+   3) Apply updates:
+      - For each key in `updated_fields`, set:
+        - `mail[key] = updated_fields[key]`
+      - Only these fields change; others (sender, subject, etc.) stay intact.
+   4) Save back safely:
+      - Write the updated `{ "counter": ..., "emails": [...] }` atomically
+        to `mail_inbox.json`.
+   5) Optional behavior:
+      - If `mail_id` is not found:
+        - Either do nothing and log a warning, or
+        - Raise an error (depending on design).
+
+   Why this is useful:
+   -------------------
+   - Core function used by Agent_Brain:
+     - smart_categorizer → updates `category`.
+     - action_item_extractor → updates `action_items`.
+     - AI_mail_drafter → updates `draftable`, etc.
+   - All updates go through a single, safe path.
+
+=================================================================================
+Prompt Functions:
+---------------------------------------------------------------------------------
+Prompt Storage Concepts:
+------------------------
+- prompt_library.json:
+  - A JSON file that stores named prompts used by the AI:
+    - e.g. "categorization_prompt", "action_extraction_prompt", "auto_reply_prompt", ...
+  - Each entry is usually a string (the base prompt text) or a small structure.
+
+- Why separate file?
+  - Prompts can be edited without touching the code.
+  - Easier for non-programmers to tweak system behavior.
+
+---------------------------------------------------------------------------------
+1) update_prompt(prompt_type, new_text)
+   --------------------------------------------------------------------------------
+   Role:
+   -----
+   Update a **specific prompt** in `prompt_library.json` so that all future
+   AI calls use the new text.
+
+   Inputs:
+   -------
+   - prompt_type (str) – key/name of the prompt in the library, e.g.:
+       "categorization_prompt"
+       "action_extraction_prompt"
+       "auto_reply_prompt"
+   - new_text (str)    – the new prompt content to store.
+
+   What it does (pipeline):
+   ------------------------
+   1) Load prompt library:
+      - Open `prompt_library.json`.
+      - Parse it into a dictionary, e.g.:
+        {
+          "categorization_prompt": "...",
+          "action_extraction_prompt": "...",
+          ...
+        }
+   2) Modify the chosen prompt:
+      - Set:
+        - `library[prompt_type] = new_text`
+      - Optionally validate:
+        - Check that `prompt_type` exists (or decide to create it if missing).
+   3) Save back safely:
+      - Write the updated dictionary back to `prompt_library.json`
+        using atomic write logic.
+   4) Optional:
+      - Log which prompt was changed and possibly who changed it (if you add
+        user info later).
+
+   Why this is useful:
+   -------------------
+   - Lets you adjust AI behavior (tone, rules, format) without code changes.
+   - Used by the UI to provide a “prompt editor” screen.
+
+=================================================================================
+How to Extend Data_Storage_Vault Safely:
+---------------------------------------------------------------------------------
+- If you add new fields to mails (e.g., "sentiment", "tags"):
+  - No change needed to `add_mail()` as long as you include them in `new_mail`.
+  - Use `update_mail()` to fill or modify those fields later.
+- If you need more prompt types:
+  - Just add new keys in `prompt_library.json`.
+  - Use `update_prompt()` to maintain them from the UI or scripts.
+- If you add new storage files (e.g., settings.json, logs.json):
+  - Follow the same pattern:
+    - One module/function responsible for loading, modifying, and atomically
+      saving that file.
+    - Keep other parts of the code from touching the file directly.
+
+=================================================================================

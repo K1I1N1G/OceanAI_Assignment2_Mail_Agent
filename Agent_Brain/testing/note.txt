@@ -1,0 +1,16 @@
+The tester.py script, originally used to validate all functions inside the Agent_Brain, has been moved to its immediate parent directory within the Agent_Brain to improve clarity and organization.
+
+How to run the tester again:
+Open the Agent_Brain directory in your terminal.
+Move the current tester.py file into this directory and optionally move test_log.txt file as well.
+Now open a terminal in the root directory.
+
+Run the following command:
+python "Agent_Brain/tester.py"
+
+
+All test results will be written to test_log.txt in the same directory.
+
+Current Test Status:
+After completing the branch setup, the test confirmed that all components executed correctly with no errors.
+The time taken by each module have been studied and optimised as well over multiple iterations.

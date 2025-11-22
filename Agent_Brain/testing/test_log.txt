@@ -1,0 +1,168 @@
+Test run at 2025-11-20T23:04:03.309238
+
+
+=== RUN: E:\OceanAI_environment\OceanAI_Mail_Agent\Agent_Brain\connection_gateway.py ===
+Started: 2025-11-20T23:04:03.309238
+
+=== DEBUG: RAW API RESPONSE ===
+URL: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDQOuBmaBlEPuxAoe7N5kEbH_ztDORbOro
+Status Code: 200
+Response Body (first 1000 chars):
+{
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "OK"
+          }
+        ],
+        "role": "model"
+      },
+      "finishReason": "STOP",
+      "index": 0
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 7,
+    "candidatesTokenCount": 1,
+    "totalTokenCount": 28,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 7
+      }
+    ],
+    "thoughtsTokenCount": 20
+  },
+  "modelVersion": "gemini-2.5-flash",
+  "responseId": "DlEfaZ6tCtW8juMPsPvLmAw"
+}
+
+=== END DEBUG ===
+
+Connection OK: OK
+Gateway test passed.
+
+Exit code: 0
+Time elapsed: 3.529 seconds
+
+
+=== RUN: E:\OceanAI_environment\OceanAI_Mail_Agent\Agent_Brain\smart_categorizer.py ===
+Started: 2025-11-20T23:04:06.841421
+
+=== DEBUG: RAW API RESPONSE ===
+URL: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDQOuBmaBlEPuxAoe7N5kEbH_ztDORbOro
+Status Code: 200
+Response Body (first 1000 chars):
+{
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "Meeting Scheduling"
+          }
+        ],
+        "role": "model"
+      },
+      "finishReason": "STOP",
+      "index": 0
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 61,
+    "candidatesTokenCount": 2,
+    "totalTokenCount": 133,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 61
+      }
+    ],
+    "thoughtsTokenCount": 70
+  },
+  "modelVersion": "gemini-2.5-flash",
+  "responseId": "EFEfac_qJ52fjuMPmZ6auAU"
+}
+
+=== END DEBUG ===
+
+Categorized: Meeting Scheduling
+
+Exit code: 0
+Time elapsed: 2.402 seconds
+
+
+=== RUN: E:\OceanAI_environment\OceanAI_Mail_Agent\Agent_Brain\action_item_extractor.py ===
+Started: 2025-11-20T23:04:09.241415
+
+=== DEBUG: RAW API RESPONSE ===
+URL: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDQOuBmaBlEPuxAoe7N5kEbH_ztDORbOro
+Status Code: 200
+Response Body (first 1000 chars):
+{
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "```json\n[\n  {\n    \"task\": \"Confirm availability for the project kickoff meeting on Monday at 10:00 AM\",\n    \"deadline\": \"before Monday 10:00 AM\"\n  },\n  {\n    \"task\": \"Share any agenda items for the project kickoff meeting\",\n    \"deadline\": \"before Monday 10:00 AM\"\n  }\n]\n```"
+          }
+        ],
+        "role": "model"
+      },
+      "finishReason": "STOP",
+      "index": 0
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 75,
+    "candidatesTokenCount": 92,
+    "totalTokenCount": 738,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 75
+      }
+    ],
+    "thoughtsTokenCount": 571
+  },
+  "modelVersion": "gemini-2.5-flash",
+  "responseId": "FVEfaZiCF4mGjuMP87axoAI"
+}
+
+=== END DEBUG ===
+
+Action items: [{'task': 'Confirm availability for the project kickoff meeting on Monday at 10:00 AM', 'deadline': 'before Monday 10:00 AM'}, {'task': 'Share any agenda items for the project kickoff meeting', 'deadline': 'before Monday 10:00 AM'}]
+
+Exit code: 0
+Time elapsed: 4.807 seconds
+
+
+=== RUN: E:\OceanAI_environment\OceanAI_Mail_Agent\Agent_Brain\AI_mail_drafter.py ===
+Started: 2025-11-20T23:04:14.050131
+
+=== DEBUG: RAW API RESPONSE ===
+URL: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDQOuBmaBlEPuxAoe7N5kEbH_ztDORbOro
+Status Code: 200
+Response Body (first 1000 chars):
+{
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "Here are a few options, choose the one that best fits your style:\n\n**Option 1 (Concise and Direct):**\n\nSubject: Re: Project Kickoff Meeting\n\nHi Alice,\n\nThanks for the invitation to the project kickoff meeting.\n\nTo help me prepare and ensure I can contribute effectively, could you please share the proposed agenda? Once I've had a chance to review it, I'll be happy to confirm my availability for Monday at 10:00 AM and suggest any relevant discussion points.\n\nBest regards,\n\n[Your Name]\n\n---\n\n**Option 2 (Slightly More Detail):**\n\nSubject: Re: Project Kickoff Meeting\n\nHi Alice,\n\nThank you for scheduling the project kickoff meeting.\n\nBefore I confirm my availability for Monday at 10:00 AM, would you be able to circulate a preliminary agenda? Having an idea of the topics to be covered would greatly assist me in preparing and identifying any specific items I might want to 
+=== END DEBUG ===
+
+Draft created (preview): (Concise and Direct):
+
+Hi Alice,
+
+Thanks for the invitation to the project kickoff meeting.
+
+To help me prepare and ensure I can contribute effectively, could you please share the proposed agenda? Once I've had a chance to review it, I'll be happy to confirm my availability for Monday at 10:00 AM an
+
+Exit code: 0
+Time elapsed: 8.831 seconds

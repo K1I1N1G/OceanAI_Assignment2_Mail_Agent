@@ -1,0 +1,149 @@
+=====================================================================
+AI Functions Overview
+---------------------------------------------------------------------
+1) connection_gateway.call()  --> Central gateway for all LLM calls.
+2) smart_categorizer()       --> Categorizes a mail using the LLM.
+3) action_item_extractor()   --> Extracts structured action items.
+4) AI_mail_drafter()         --> Generates polite draft replies.
+
+Each function:
+- Builds its own prompt using the prompt library.
+- Sends that prompt through `connection_gateway`.
+- Validates and cleans the model’s output.
+- Saves the result back into the mail storage.
+
+=====================================================================
+1) connection_gateway.call()
+---------------------------------------------------------------------
+Purpose:
+--------
+Provide a **single, safe entry point** for all LLM calls.
+
+Inputs:
+-------
+- `prompt_text` (str): The final text prompt we want to send to the model.
+
+Outputs:
+--------
+- `response_text` (str): The model’s reply as plain text.
+
+Core Pipeline:
+--------------
+1) Read configuration:
+   - Get API key and model settings (e.g., model name) from config/env.
+2) Build request:
+   - Wrap `prompt_text` as the request body expected by the Gemini API.
+3) Call the API:
+   - Send the request to Gemini.
+   - Wait for the response.
+4) Extract text:
+   - Take the model’s reply text from the response structure.
+   - Return that text as a simple string.
+5) Error handling:
+   - If there’s a network or API failure, raise a `ConnectionError`.
+   - The calling function (categorizer, extractor, drafter) decides
+     whether to retry or fail.
+
+How to extend / modify:
+-----------------------
+- To change model parameters:
+  - Add temperature/top_p/etc. controls here.
+- To support another provider/model:
+  - Add a new branch or adapter inside this function while keeping
+    the same `call(prompt_text) -> str` interface.
+- To add logging:
+  - Log prompt length and truncated responses here (careful with PII).
+
+=====================================================================
+2) smart_categorizer(mail)
+---------------------------------------------------------------------
+Purpose:
+--------
+Assign a **single category label** to a mail (e.g., "work", "personal", "spam")
+using the LLM, and save that label to the mail record.
+
+Inputs:
+-------
+- `mail` (dict) with at least:
+  - `id`
+  - `body`
+
+Outputs:
+--------
+- Returns the chosen `category` (str).
+- Updates the stored mail (via `update_mail`) with:
+  - `mail["category"] = <category>`
+
+Core Pipeline (step-by-step):
+-----------------------------
+1) Load prompt:
+   - Read the "categorization" base prompt from `prompt_library.json`.
+2) Build final prompt:
+   - Insert the mail’s body into the prompt.
+   - The prompt instructs the model to reply with a **single category label**
+     from an allowed set (e.g., "work", "personal", "spam", etc.).
+3) Call LLM through gateway:
+   - Use `connection_gateway.call(final_prompt)`.
+   - On `ConnectionError`, retry up to 5 times before failing.
+4) Validate category:
+   - Clean whitespace from the model’s reply.
+   - Use a regex or strict check to ensure the result is a **valid category**
+     (e.g., exact match against allowed names).
+   - If invalid:
+     - Option A: Try to normalize (lowercase, strip punctuation).
+     - Option B: Fallback to a default category (e.g., "uncategorized").
+5) Save result:
+   - Call `update_mail(mail_id, {"category": category})`.
+   - Return the category string.
+
+How to extend / modify:
+-----------------------
+- To add new categories:
+  - Update the prompt to list the new allowed labels.
+  - Update the validation logic to accept them.
+- To change logic (e.g., hierarchical categories):
+  - Make the prompt ask for both a main and sub-category.
+  - Update the state to store both fields.
+- To add analytics:
+  - Log mail id + category for later stats.
+
+=====================================================================
+3) action_item_extractor(mail)
+---------------------------------------------------------------------
+Purpose:
+--------
+Extract **structured action items** from a mail (tasks, deadlines, owners)
+and store them in `mail["action_items"]`.
+
+Inputs:
+-------
+- `mail` (dict) with at least:
+  - `id`
+  - `body`
+
+Outputs:
+--------
+- `action_items` (list of dicts), e.g.:
+  [
+    {"task": "Prepare monthly report", "owner": "Me", "due_date": "2025-11-30"},
+    ...
+  ]
+- Updates `mail["action_items"]` in storage via `update_mail`.
+
+Core Pipeline (step-by-step):
+-----------------------------
+1) Load prompt:
+   - Read an "action_extraction" prompt from `prompt_library.json`.
+   - This prompt explains:
+     - The JSON format the model must use.
+     - Example tasks and fields (e.g., task, owner, due_date, priority).
+2) Build final prompt:
+   - Embed the mail’s body into the prompt.
+   - Instruct the model to return **only JSON** representing a list of action items.
+3) Call LLM through gateway:
+   - Use `connection_gateway.call(final_prompt)`.
+   - Retry up to 5 times if a `ConnectionError` occurs.
+4) Parse and clean JSON:
+   - The model sometimes returns extra text around the JSON.
+   - Find the JSON segment (e.g., between first `{` / `[` and last `}` / `]`).
+   - Safely `json.loa

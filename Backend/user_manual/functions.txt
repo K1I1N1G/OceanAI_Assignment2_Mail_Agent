@@ -1,0 +1,207 @@
+Backend Utility Layer — Developer Manual
+===============================================================================
+Purpose:
+--------
+This layer provides helper utilities that support:
+- UI rendering
+- Prompt generation
+- Mail loading with background processing
+- Safe normalization and formatting
+
+These modules do not make AI calls or modify prompts directly — they act
+as glue between the UI, storage layer, and the Agent_Brain automation.
+
+===============================================================================
+FILES IN THIS LAYER:
+- helper.py
+- ui_helper.py
+- prompter.py
+- mail_func.py
+- load_mail.py
+
+Each module below includes:
+- Purpose
+- Inputs & Outputs
+- Processing Pipeline
+- Extension Guide
+
+===============================================================================
+1) helper.py
+───────────────────────────────────────────────────────────────────────────────
+Role:
+-----
+Provides a reusable HTML builder to generate the right-side UI content inside 
+email cards (timestamp + category label + task indicator).
+
+Source Reference: :contentReference[oaicite:0]{index=0}
+
+Inputs:
+-------
+- `ts` (string, already formatted)
+- `category_html` (HTML string block or empty)
+- `tasks_html` (HTML string block or empty)
+
+Output:
+-------
+- Final combined HTML snippet as a string.
+
+Processing Pipeline:
+--------------------
+1. Escape timestamp text using `html.escape()` (safety against injection).
+2. Trust `category_html` and `tasks_html` (expected already sanitized).
+3. Assemble all components into an inline `<div class="ocean-right">`.
+
+Extension Notes:
+----------------
+- Add new right-side UI components here (priority emoji, AI confidence score, etc.).
+- If styling changes later, only this file needs modification.
+
+
+===============================================================================
+2) ui_helper.py
+───────────────────────────────────────────────────────────────────────────────
+Role:
+-----
+A simplified version of helper.py created for compatibility with older UI logic.
+
+Source Reference: :contentReference[oaicite:1]{index=1}
+
+Key Differences:
+----------------
+- Same signature as helper.py but shorter, simpler implementation.
+- Exists to ensure older UI references do not break.
+
+When To Use:
+------------
+- Keep for backward compatibility.
+- DEVs can consolidate later once UI fully standardizes.
+
+Extension Notes:
+----------------
+- Marked as safe-to-remove only when UI no longer imports it.
+
+
+===============================================================================
+3) prompter.py
+───────────────────────────────────────────────────────────────────────────────
+Role:
+-----
+Convert a mail object into a structured, LLM-ready prompt that the chat system 
+or Agent_Brain can use for drafting or context-injected responses.
+
+Source Reference: :contentReference[oaicite:2]{index=2}
+
+Inputs:
+-------
+- A UI mail object (normalized format produced by load_mail).
+- Optional flag: `include_instructions=True/False`.
+
+Outputs:
+--------
+- Final text prompt string for an LLM.
+- OR a payload object `{ prompt: ..., metadata: {...} }`.
+
+Processing Pipeline:
+--------------------
+1. Extract normalized metadata fields: `sender`, `subject`, `timestamp`, category.
+2. Generate human-readable lines summarizing mail.
+3. Format action items into numbered points.
+4. Insert mail body (optionally truncated for huge content).
+5. Include system instructions (tone, behavior, INVALID keyword).
+6. Append metadata such as draftable status or reference links.
+7. Return a clean, multi-section formatted string.
+
+Extension Notes:
+----------------
+- Add new metadata: (sentiment score, estimated urgency, etc.).
+- Allow configurable modes (short summary vs verbose debug mode).
+- Add JSON-only output mode for model fine-tuning.
+
+
+===============================================================================
+4) mail_func.py
+───────────────────────────────────────────────────────────────────────────────
+Role:
+-----
+Core execution engine that powers:
+- Background mail automation
+- Throttled AI execution pipeline
+- Inbox parsing and normalization
+- Error handling + quota fallback logic
+
+Source Reference: :contentReference[oaicite:3]{index=3}
+
+Key Responsibilities:
+---------------------
+- Safely load inbox JSON using lock-based I/O
+- Normalize bodies, timestamps, categories, and action list formats
+- Convert raw mails → UI objects (`_make_ui_object()`)
+- Call Agent_Brain functions sequentially:
+  1) smart_categorizer
+  2) action_item_extractor
+  3) AI_mail_drafter
+- Maintain a background processing thread (one per process)
+- Handle quota restrictions with global backoff
+- Detect duplicate drafts and skip if one already exists
+
+Outputs:
+--------
+- Immediately returns UI-ready list for the front-end (fast)
+- In parallel, processes mails in the background until fully enriched
+
+Extension Notes:
+----------------
+- Modify throttle settings using environment variables.
+- Add new automation steps into `_process_one_mail()`.
+- Extend Quota-Awareness to other providers if integrated later.
+- Avoid UI breakage by keeping return format stable.
+
+
+===============================================================================
+5) load_mail.py
+───────────────────────────────────────────────────────────────────────────────
+Role:
+-----
+Acts as a **stable entry point** for UI and scripts while delegating real 
+functionality to `mail_func.py`.
+
+Source Reference: :contentReference[oaicite:4]{index=4}
+
+Primary Responsibilities:
+-------------------------
+✔ Re-export functions from mail_func so old imports don’t break  
+✔ Provide prompt-reset hooks:
+
+- drop_categories_on_categorizer_prompt_change()
+- drop_action_items_on_action_prompt_change()
+- reset_draftable_on_drafter_prompt_change()
+
+✔ Automatically locate inbox file across multiple directory layouts
+
+Processing Pipeline:
+--------------------
+1. UI calls something like:
+      `from Backend.load_mail import load_and_process`
+2. load_mail forwards execution to `mail_func.load_and_process()`.
+3. If prompt files change, mail cache is reset for reprocessing.
+
+Extension Notes:
+----------------
+- Keep this file small: It is a routing shim.
+- Add new "reset methods" when new AI features use cached metadata.
+
+
+===============================================================================
+How To Extend This Layer
+-------------------------------------------------------------------------------
+When adding new capabilities (ex: sentiment analysis, urgency detection):
+
+1) Add metadata fields → stored in Data_Storage_Vault  
+2) Normalize field in `_make_ui_object()` in mail_func.py  
+3) Add display helpers in helper.py/ui_helper.py  
+4) Add prompt exposure rule in prompter.py  
+5) Optionally add a “reset_wipe” rule inside load_mail.py if the prompt changes.
+
+This keeps architecture clean and modular.
+
+===============================================================================
