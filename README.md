@@ -5,6 +5,15 @@ Kumar Abhishek (22BCE1907) Final Year CSC Core student at VIT Chennai
 
 Repository: OceanAI_Assignment2_Mail_Agent
 URL: https://github.com/K1I1N1G/OceanAI_Assignment2_Mail_Agent
+
+Demo link: https://drive.google.com/file/d/1I0J69XsTHjy3RPPSjfewj9u2zH6NpWAe/view?usp=sharing
+
+Disclaimer: 
+1)The code implementation uses Free tier Gemini 2.5 model. This limits overall API calls per minute and overall API calls per day.
+2)The prompts follow structure, hence for categorisation prompt, please add new categories between "[" and "]".
+3)In action-item retrieval prompt only modify "Example Response"
+4)For mail drafting there are no prompt restrictions, define the kind of mail for which a draft is generated and give a base structure.
+NOTE: {These limitations are only due to free tier integration complexities and not due to the codes themselves. Each code has been optimised for best performance.}
 ________________________________________
 🔹 Project Description:
 OceanAI Mail Agent is an AI-powered email assistant that uses Google Gemini to:
